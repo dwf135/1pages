@@ -1,0 +1,62 @@
+---
+title: 手动暴力删除掉Windows defender — 记录下
+slug: 
+date: 2024-12-27
+description: 手动暴力删除掉Windows defender — 记录下
+tags: ["mdx"]
+imgurl: 
+---
+
+实测过的Windows有：win10 22H2、win11 21H2、win11 23H2、win11 24H2（最新版，Pro版与LTSC版都测试过了）。
+
+方法如下：
+1、用PE启动电脑
+
+2、在PE中，删除C盘下述目录，我默认认为你的windows是安装在C盘的！
+
+C:Program Files文件夹里面删除下面2个文件夹:
+
+C:Program FilesWindows Defender
+和
+C:Program FilesWindows Defender Advanced Threat Protection
+
+=============================================
+
+C:Program Files (x86)里面删除下面1个文件夹：
+
+C:Program Files (x86)Windows Defender
+
+=============================================
+
+C:ProgramData里面删除下面3个文件夹：
+
+C:ProgramDataMicrosoftWindows Defender
+和
+C:ProgramDataMicrosoftWindows Defender Advanced Threat Protection
+和
+C:ProgramDataMicrosoftWindows Security Health
+
+=============================================
+
+启动电脑，然后进入 regedit 注册表编辑器
+
+在  HKEY_LOCAL_MACHINESoftwareMicrosoftWindowsCurrentVersionRun 下
+删除 SecurityHealthSystray.exe 项
+
+在  HKEY_LOCAL_MACHINESYSTEMCurrentControlSetServices 下
+删除 MDCoreSvc 项  和 WinDefend 项。注意：win11 只有WinDefend 项。
+
+=============================================
+然后一切就清爽了。win10在手动更新时会报《你的电脑缺乏必要的修复》，不理睬它就是了，除了definder相关更新不能更新外，其他更新基本不受影响。而win11 23H2和24H2就一点影响也没有，根本就没有报错信息。
+
+=============================================
+
+备注：
+其实，你不删除注册表里的相关项也没事，因为，SecurityHealthSystray.exe 是在任务栏里显示defender绿色盾牌小图标的，defender都被你删掉了，看着那绿色盾牌小图标心里烦，虽然它再也干不了什么了。删除 MDCoreSvc 项  和 WinDefend 项是为了让windows的事件记录器里没有报错信息（会报启动服务失败错），如果你从不看windows的事件记录器，眼不见心不烦，不删除这两个注册表项也没事。
+
+
+另外，如果你怕删除相关目录会有问题，你把目录改名即可，改名的目的是让windows找不到服务对应的exe文件和dll文件。
+
+
+
+
